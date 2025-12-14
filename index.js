@@ -40,3 +40,25 @@ app.get("/games/:gameId/game-passes", async (req, res) => {
 app.listen(PORT, () => {
 	console.log(`Proxy running on port ${PORT}`);
 });
+
+app.get("/users/:userId/games", async (req, res) => {
+	try {
+		const userId = req.params.userId;
+
+		const robloxUrl =
+			`https://games.roblox.com/v2/users/${userId}/games?accessFilter=2&limit=50&sortOrder=Asc`;
+
+		const response = await fetch(robloxUrl, {
+			headers: {
+				"User-Agent": "RobloxProxy"
+			}
+		});
+
+		const data = await response.json();
+		res.json(data);
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ error: "Proxy error" });
+	}
+});
+
